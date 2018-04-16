@@ -14,9 +14,9 @@ typedef struct {
 	uint8_t d[4];
 } key_set_t;
 
-void generate_key(uint8_t *key);
-void generate_sub_keys(key_set_t key_set[17], uint8_t *main_key);
-void process_message(uint8_t *processed_piece, uint8_t *message_piece,
+void des_generateKey(uint8_t *key);
+void des_generateSubKeys(key_set_t key_set[17], uint8_t *main_key);
+void des_processMessage( uint8_t *processed_piece, uint8_t *message_piece,
 		key_set_t key_set[17], uint8_t mode);
 
 #endif /* _DES_H_ */

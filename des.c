@@ -115,7 +115,7 @@ static code const uint8_t final_message_permutation[] =  {
 		33,  1, 41,  9, 49, 17, 57, 25};
 
 
-void generate_key(uint8_t *key) {
+void des_generateKey(uint8_t *key) {
 	uint8_t i;
 
 	for (i = 0; i < 8; i++) {
@@ -123,7 +123,7 @@ void generate_key(uint8_t *key) {
 	}
 }
 
-void generate_sub_keys(uint8_t *main_key, key_set key_set[17]) {
+void des_generateSubKeys(key_set_t key_set[17], uint8_t *main_key) {
 	uint8_t i;
 	uint8_t j;
 	uint8_t shift_size;
@@ -226,7 +226,7 @@ void generate_sub_keys(uint8_t *main_key, key_set key_set[17]) {
 	}
 }
 
-void process_message(uint8_t *processed_piece, uint8_t *message_piece,
+void des_processMessage(uint8_t *processed_piece, uint8_t *message_piece,
 		key_set_t key_set[17], uint8_t mode) {
 	uint8_t i, k;
 	uint8_t shift_size;
