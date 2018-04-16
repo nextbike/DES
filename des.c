@@ -149,7 +149,7 @@ void print_key_set(key_set key_set){
 	printf("\n");
 }
 
-void generate_sub_keys(uint8_t *main_key, key_set key_sets[17]) {
+void generate_sub_keys(key_set_t key_set[17], uint8_t *main_key) {
 	uint8_t i;
 	uint8_t j;
 	uint8_t shift_size;
@@ -160,7 +160,7 @@ void generate_sub_keys(uint8_t *main_key, key_set key_sets[17]) {
 	uint8_t fourth_shift_bits;
 
 	for (i = 0; i < 8; i++) {
-		key_sets[0].k[i] = 0;
+		key_set[0].k[i] = 0;
 	}
 
 	for (i = 0; i < 56; i++) {
@@ -169,27 +169,27 @@ void generate_sub_keys(uint8_t *main_key, key_set key_sets[17]) {
 		shift_byte &= main_key[(shift_size - 1)/8];
 		shift_byte <<= ((shift_size - 1)%8);
 
-		key_sets[0].k[i/8] |= (shift_byte >> i%8);
+		key_set[0].k[i/8] |= (shift_byte >> i%8);
 	}
 
 	for (i=0; i<3; i++) {
-		key_sets[0].c[i] = key_sets[0].k[i];
+		key_set[0].c[i] = key_set[0].k[i];
 	}
 
-	key_sets[0].c[3] = key_sets[0].k[3] & 0xF0;
+	key_set[0].c[3] = key_set[0].k[3] & 0xF0;
 
 	for (i=0; i<3; i++) {
-		key_sets[0].d[i] = (key_sets[0].k[i+3] & 0x0F) << 4;
-		key_sets[0].d[i] |= (key_sets[0].k[i+4] & 0xF0) >> 4;
+		key_set[0].d[i] = (key_set[0].k[i+3] & 0x0F) << 4;
+		key_set[0].d[i] |= (key_set[0].k[i+4] & 0xF0) >> 4;
 	}
 
-	key_sets[0].d[3] = (key_sets[0].k[6] & 0x0F) << 4;
+	key_set[0].d[3] = (key_set[0].k[6] & 0x0F) << 4;
 
 
 	for (i=1; i<17; i++) {
 		for (j=0; j<4; j++) {
-			key_sets[i].c[j] = key_sets[i-1].c[j];
-			key_sets[i].d[j] = key_sets[i-1].d[j];
+			key_set[i].c[j] = key_set[i-1].c[j];
+			key_set[i].d[j] = key_set[i-1].d[j];
 		}
 
 		shift_size = key_shift_sizes[i];
@@ -200,60 +200,60 @@ void generate_sub_keys(uint8_t *main_key, key_set key_sets[17]) {
 		}
 
 		// Process C
-		first_shift_bits = shift_byte & key_sets[i].c[0];
-		second_shift_bits = shift_byte & key_sets[i].c[1];
-		third_shift_bits = shift_byte & key_sets[i].c[2];
-		fourth_shift_bits = shift_byte & key_sets[i].c[3];
+		first_shift_bits = shift_byte & key_set[i].c[0];
+		second_shift_bits = shift_byte & key_set[i].c[1];
+		third_shift_bits = shift_byte & key_set[i].c[2];
+		fourth_shift_bits = shift_byte & key_set[i].c[3];
 
-		key_sets[i].c[0] <<= shift_size;
-		key_sets[i].c[0] |= (second_shift_bits >> (8 - shift_size));
+		key_set[i].c[0] <<= shift_size;
+		key_set[i].c[0] |= (second_shift_bits >> (8 - shift_size));
 
-		key_sets[i].c[1] <<= shift_size;
-		key_sets[i].c[1] |= (third_shift_bits >> (8 - shift_size));
+		key_set[i].c[1] <<= shift_size;
+		key_set[i].c[1] |= (third_shift_bits >> (8 - shift_size));
 
-		key_sets[i].c[2] <<= shift_size;
-		key_sets[i].c[2] |= (fourth_shift_bits >> (8 - shift_size));
+		key_set[i].c[2] <<= shift_size;
+		key_set[i].c[2] |= (fourth_shift_bits >> (8 - shift_size));
 
-		key_sets[i].c[3] <<= shift_size;
-		key_sets[i].c[3] |= (first_shift_bits >> (4 - shift_size));
+		key_set[i].c[3] <<= shift_size;
+		key_set[i].c[3] |= (first_shift_bits >> (4 - shift_size));
 
 		// Process D
-		first_shift_bits = shift_byte & key_sets[i].d[0];
-		second_shift_bits = shift_byte & key_sets[i].d[1];
-		third_shift_bits = shift_byte & key_sets[i].d[2];
-		fourth_shift_bits = shift_byte & key_sets[i].d[3];
+		first_shift_bits = shift_byte & key_set[i].d[0];
+		second_shift_bits = shift_byte & key_set[i].d[1];
+		third_shift_bits = shift_byte & key_set[i].d[2];
+		fourth_shift_bits = shift_byte & key_set[i].d[3];
 
-		key_sets[i].d[0] <<= shift_size;
-		key_sets[i].d[0] |= (second_shift_bits >> (8 - shift_size));
+		key_set[i].d[0] <<= shift_size;
+		key_set[i].d[0] |= (second_shift_bits >> (8 - shift_size));
 
-		key_sets[i].d[1] <<= shift_size;
-		key_sets[i].d[1] |= (third_shift_bits >> (8 - shift_size));
+		key_set[i].d[1] <<= shift_size;
+		key_set[i].d[1] |= (third_shift_bits >> (8 - shift_size));
 
-		key_sets[i].d[2] <<= shift_size;
-		key_sets[i].d[2] |= (fourth_shift_bits >> (8 - shift_size));
+		key_set[i].d[2] <<= shift_size;
+		key_set[i].d[2] |= (fourth_shift_bits >> (8 - shift_size));
 
-		key_sets[i].d[3] <<= shift_size;
-		key_sets[i].d[3] |= (first_shift_bits >> (4 - shift_size));
+		key_set[i].d[3] <<= shift_size;
+		key_set[i].d[3] |= (first_shift_bits >> (4 - shift_size));
 
 		for (j=0; j<48; j++) {
 			shift_size = sub_key_permutation[j];
 			if (shift_size <= 28) {
 				shift_byte = 0x80 >> ((shift_size - 1)%8);
-				shift_byte &= key_sets[i].c[(shift_size - 1)/8];
+				shift_byte &= key_set[i].c[(shift_size - 1)/8];
 				shift_byte <<= ((shift_size - 1)%8);
 			} else {
 				shift_byte = 0x80 >> ((shift_size - 29)%8);
-				shift_byte &= key_sets[i].d[(shift_size - 29)/8];
+				shift_byte &= key_set[i].d[(shift_size - 29)/8];
 				shift_byte <<= ((shift_size - 29)%8);
 			}
 
-			key_sets[i].k[j/8] |= (shift_byte >> j%8);
+			key_set[i].k[j/8] |= (shift_byte >> j%8);
 		}
 	}
 }
 
-void process_message(uint8_t *message_piece, uint8_t *processed_piece,
-		key_set key_sets[17], uint8_t mode) {
+void process_message(uint8_t *processed_piece, uint8_t *message_piece,
+		key_set_t key_set[17], uint8_t mode) {
 	uint8_t i, k;
 	uint8_t shift_size;
 	uint8_t shift_byte;
@@ -301,7 +301,7 @@ void process_message(uint8_t *message_piece, uint8_t *processed_piece,
 		}
 
 		for (i = 0; i < 6; i++) {
-			er[i] ^= key_sets[key_index].k[i];
+			er[i] ^= key_set[key_index].k[i];
 		}
 
 		for (i = 0; i < 4; i++) {
