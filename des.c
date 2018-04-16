@@ -265,7 +265,6 @@ void process_message(uint8_t *message_piece, uint8_t *processed_piece,
 	uint8_t pre_end_permutation[8];
 
 	memset(initial_permutation, 0, sizeof initial_permutation);
-	memset(processed_piece, 0, 8);
 
 	for (i = 0; i < 64; i++) {
 		shift_size = initial_message_permutation[i];
@@ -420,6 +419,7 @@ void process_message(uint8_t *message_piece, uint8_t *processed_piece,
 		pre_end_permutation[4+i] = l[i];
 	}
 
+	memset(processed_piece, 0, 8);
 	for (i = 0; i < 64; i++) {
 		shift_size = final_message_permutation[i];
 		shift_byte = 0x80 >> ((shift_size - 1)%8);
